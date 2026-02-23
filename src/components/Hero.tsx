@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useMotionValueEvent, useTransform } from 'motion/react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Scene3D } from './Scene3D';
@@ -10,35 +10,33 @@ gsap.registerPlugin(ScrollTrigger);
 export const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setScrollProgress(latest);
-  });
+  const yBg = useTransform(scrollYProgress, [0, 1], [0, -150]);
 
   const title = "Design. Engineered to Move.";
   
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black"
+      className="relative h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden bg-black z-10"
     >
       {/* 3D Scene */}
-      <Scene3D scrollProgress={scrollProgress} />
+      <motion.div style={{ opacity }} className="absolute inset-0 z-0">
+        <Scene3D scrollProgress={scrollYProgress} />
+      </motion.div>
 
       {/* Background Elements */}
       <motion.div 
-        style={{ scale, opacity }}
+        style={{ scale, opacity, y: yBg }}
         className="absolute inset-0 z-0 pointer-events-none"
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-white/5 rounded-full blur-[150px]" />

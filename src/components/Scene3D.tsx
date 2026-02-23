@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Torus, Octahedron } from '@react-three/drei';
+import { Float, Sphere, Torus } from '@react-three/drei';
 import * as THREE from 'three';
+import { type MotionValue } from 'motion/react';
 
 const Shape = ({ scrollProgress, position, type, color, delay = 0 }: { 
-  scrollProgress: number, 
+  scrollProgress: MotionValue<number>, 
   position: [number, number, number], 
-  type: 'sphere' | 'torus' | 'octahedron',
+  type: 'sphere' | 'torus',
   color: string,
   delay?: number
 }) => {
@@ -14,47 +15,44 @@ const Shape = ({ scrollProgress, position, type, color, delay = 0 }: {
 
   useFrame((state) => {
     if (meshRef.current) {
+      const progress = scrollProgress.get();
       const time = state.clock.getElapsedTime() + delay;
-      meshRef.current.rotation.x = scrollProgress * Math.PI * 2 + time * 0.2;
-      meshRef.current.rotation.y = scrollProgress * Math.PI + time * 0.3;
-      meshRef.current.position.y = position[1] + Math.sin(time) * 0.2 - scrollProgress * 3;
+      meshRef.current.rotation.x = progress * Math.PI + time * 0.1;
+      meshRef.current.rotation.y = progress * Math.PI * 0.5 + time * 0.15;
+      meshRef.current.position.y = position[1] + Math.sin(time * 0.5) * 0.1 - progress * 2;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={1}>
+    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
       {type === 'sphere' && (
-        <Sphere ref={meshRef} args={[1, 64, 64]} position={position} scale={1.2}>
-          <MeshDistortMaterial color={color} distort={0.4} speed={2} roughness={0.1} metalness={0.8} />
+        <Sphere ref={meshRef} args={[1, 32, 32]} position={position} scale={1.2}>
+          <meshStandardMaterial color={color} roughness={0.2} metalness={0.8} />
         </Sphere>
       )}
       {type === 'torus' && (
-        <Torus ref={meshRef} args={[1, 0.3, 16, 100]} position={position} scale={0.8}>
-          <meshStandardMaterial color={color} roughness={0.1} metalness={0.9} />
+        <Torus ref={meshRef} args={[1, 0.2, 12, 48]} position={position} scale={0.8}>
+          <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} />
         </Torus>
-      )}
-      {type === 'octahedron' && (
-        <Octahedron ref={meshRef} args={[1, 0]} position={position} scale={0.7}>
-          <meshStandardMaterial color={color} roughness={0.1} metalness={0.9} />
-        </Octahedron>
       )}
     </Float>
   );
 };
 
-export const Scene3D = ({ scrollProgress }: { scrollProgress: number }) => {
+export const Scene3D = ({ scrollProgress }: { scrollProgress: MotionValue<number> }) => {
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} />
+    <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
+      <Canvas 
+        camera={{ position: [0, 0, 8], fov: 45 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: false, powerPreference: "high-performance" }}
+      >
+        <ambientLight intensity={0.4} />
+        <pointLight position={[5, 5, 5]} intensity={0.8} />
         
         <Shape scrollProgress={scrollProgress} position={[0, 0, 0]} type="sphere" color="#ffffff" />
         <Shape scrollProgress={scrollProgress} position={[-4, 2, -2]} type="torus" color="#6366f1" delay={1} />
-        <Shape scrollProgress={scrollProgress} position={[4, -2, -1]} type="octahedron" color="#a855f7" delay={2} />
-        <Shape scrollProgress={scrollProgress} position={[-3, -3, -3]} type="octahedron" color="#ec4899" delay={3} />
-        <Shape scrollProgress={scrollProgress} position={[5, 3, -4]} type="torus" color="#ffffff" delay={4} />
+        <Shape scrollProgress={scrollProgress} position={[4, -2, -1]} type="sphere" color="#a855f7" delay={2} />
       </Canvas>
     </div>
   );

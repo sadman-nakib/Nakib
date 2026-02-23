@@ -16,12 +16,12 @@ import { Contact } from './components/Contact';
 export default function App() {
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-apple-bg text-apple-text grain">
+      <div className="relative min-h-screen bg-apple-bg text-apple-text">
         <Cursor />
         <Navbar />
         
         <main>
-          <Hero />
+          {/* <Hero /> */}
           <ScrollNarrative />
           <Projects />
           <SplitSection />

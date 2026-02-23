@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { EASE_APPLE } from '../lib/utils';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -9,6 +9,14 @@ gsap.registerPlugin(ScrollTrigger);
 export const ScrollNarrative = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: triggerRef,
+    offset: ["start end", "start start"]
+  });
+
+  const firstSlideOpacity = useTransform(scrollYProgress, [0.8, 1], [0, 1]);
+  const firstSlideY = useTransform(scrollYProgress, [0.8, 1], [50, 0]);
 
   useEffect(() => {
     const pin = gsap.fromTo(
@@ -22,8 +30,8 @@ export const ScrollNarrative = () => {
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top",
-          end: "+=3000",
-          scrub: 1,
+          end: "+=4000", // Increased scroll distance for more "air"
+          scrub: 1.5, // Smoother, more weighted scrub
           pin: true,
           anticipatePin: 1,
         },
@@ -36,18 +44,16 @@ export const ScrollNarrative = () => {
   }, []);
 
   return (
-    <div className="overflow-hidden bg-black">
+    <div className="overflow-hidden bg-black relative z-20">
       <div ref={triggerRef}>
         <div
           ref={sectionRef}
-          className="h-screen w-[300vw] flex flex-row relative"
+          className="h-[100dvh] w-[300vw] flex flex-row relative will-change-transform"
         >
           {/* Slide 1 */}
-          <div className="h-screen w-screen flex items-center justify-center p-20">
+          <div className="h-[100dvh] w-screen flex items-center justify-center p-20 bg-black">
             <motion.div 
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 1.5, ease: EASE_APPLE }}
+              style={{ opacity: firstSlideOpacity, y: firstSlideY }}
               className="max-w-4xl text-center"
             >
               <h2 className="text-5xl md:text-8xl font-display font-bold mb-10 text-gradient leading-[0.9]">
@@ -60,7 +66,7 @@ export const ScrollNarrative = () => {
           </div>
 
           {/* Slide 2 */}
-          <div className="h-screen w-screen flex items-center justify-center p-20 bg-apple-secondary">
+          <div className="h-[100dvh] w-screen flex items-center justify-center p-20 bg-apple-secondary">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center max-w-7xl">
               <motion.div 
                 initial={{ opacity: 0, x: -50 }}
@@ -69,7 +75,7 @@ export const ScrollNarrative = () => {
                 className="relative aspect-video rounded-[40px] overflow-hidden glass group"
               >
                  <img 
-                  src="https://picsum.photos/seed/tech1/1200/800" 
+                  src="https://picsum.photos/seed/tech1/800/450" 
                   alt="Process" 
                   className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-[2s] ease-apple"
                   referrerPolicy="no-referrer"
@@ -97,7 +103,7 @@ export const ScrollNarrative = () => {
           </div>
 
           {/* Slide 3 */}
-          <div className="h-screen w-screen flex items-center justify-center p-20 relative overflow-hidden">
+          <div className="h-[100dvh] w-screen flex items-center justify-center p-20 relative overflow-hidden">
              <div className="text-center">
                 <motion.h2 
                   initial={{ opacity: 0, scale: 1.2 }}

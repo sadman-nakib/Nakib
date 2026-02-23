@@ -52,7 +52,7 @@ export const SplitSection = () => {
         >
           <motion.img 
             style={{ scale: scaleImage }}
-            src="https://picsum.photos/seed/abstract/1200/1500" 
+            src="https://picsum.photos/seed/abstract/800/1000" 
             alt="Abstract" 
             loading="lazy"
             className="w-full h-full object-cover opacity-80"

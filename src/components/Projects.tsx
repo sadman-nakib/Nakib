@@ -6,19 +6,19 @@ const projects = [
   {
     title: "Vision Pro Interface",
     category: "Spatial Design",
-    image: "https://picsum.photos/seed/vision/1600/900",
+    image: "https://picsum.photos/seed/vision/800/450",
     tags: ["SwiftUI", "Unity", "ARKit"]
   },
   {
     title: "Lumina Dashboard",
     category: "Fintech",
-    image: "https://picsum.photos/seed/lumina/1600/900",
+    image: "https://picsum.photos/seed/lumina/800/450",
     tags: ["React", "D3.js", "Node.js"]
   },
   {
     title: "Aether Mobile App",
     category: "E-Commerce",
-    image: "https://picsum.photos/seed/aether/1600/900",
+    image: "https://picsum.photos/seed/aether/800/450",
     tags: ["Next.js", "Stripe", "Framer"]
   }
 ];
